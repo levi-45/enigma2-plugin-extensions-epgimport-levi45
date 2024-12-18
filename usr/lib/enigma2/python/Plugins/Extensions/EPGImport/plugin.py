@@ -1,31 +1,36 @@
 from __future__ import absolute_import, print_function
+from . import _
 
-import os
-import time
-
-import Components.PluginComponent
-import Screens.Standby
-import NavigationInstance
-from enigma import eServiceCenter, eServiceReference, eEPGCache, getDesktop, eTimer, eConsoleAppContainer
 from Components.ActionMap import ActionMap
 from Components.Button import Button
-from Components.config import config, getConfigListEntry, ConfigClock, ConfigEnableDisable, ConfigNumber, ConfigInteger, ConfigSelection, ConfigSubDict, ConfigSubsection, ConfigText, ConfigYesNo, NoSave
 from Components.ConfigList import ConfigListScreen
 from Components.Console import Console
 from Components.Label import Label
 from Components.ScrollLabel import ScrollLabel
+from Components.config import config, ConfigEnableDisable, ConfigSubsection, \
+    ConfigYesNo, ConfigClock, getConfigListEntry, ConfigText, ConfigInteger, \
+    ConfigSelection, ConfigNumber, ConfigSubDict, NoSave, configfile      
 from Plugins.Plugin import PluginDescriptor
 from Screens.ChoiceBox import ChoiceBox
 from Screens.MessageBox import MessageBox
-from Screens.VirtualKeyBoard import VirtualKeyBoard
 from Screens.Screen import Screen
+from Screens.VirtualKeyBoard import VirtualKeyBoard
 from Tools import Notifications
 from Tools.Directories import SCOPE_PLUGINS, fileExists, resolveFilename
 from Tools.FuzzyDate import FuzzyTime
 from Tools.StbHardware import getFPWasTimerWakeup
+from enigma import eServiceCenter, eServiceReference, eEPGCache, getDesktop, eTimer, eConsoleAppContainer
+import Components.PluginComponent
+import NavigationInstance
+import Screens.Standby
+import os
+import time
 
-
-from . import EPGConfig, EPGImport, ExpandableSelectionList, _, filtersServices, log
+from . import log
+from . import ExpandableSelectionList
+from . import EPGImport
+from . import EPGConfig
+from . import filtersServices
 
 
 def lastMACbyte():
@@ -44,6 +49,35 @@ def calcDefaultStarttime():
     return (5 * 60 * 60) + offset
 
 
+def getMountPoints():
+    mount_points = []
+    try:
+        with open('/proc/mounts', 'r') as mounts:
+            for line in mounts:
+                parts = line.split()
+                mount_point = parts[1]
+                if os.path.ismount(mount_point) and os.access(mount_point, os.W_OK):
+                    mount_points.append(mount_point)
+    except Exception as e:
+        print("[EPGImport] Error reading /proc/mounts:", e)
+    return mount_points
+
+
+mount_points = getMountPoints()
+mount_point = None
+for mp in mount_points:
+    epg_path = os.path.join(mp, 'epg.dat')
+    if os.path.exists(epg_path):
+        mount_point = epg_path
+        break
+
+
+HDD_EPG_DAT = mount_point or '/etc/enigma2/epg.dat'
+if config.misc.epgcache_filename.value:
+    HDD_EPG_DAT = config.misc.epgcache_filename.value
+else:
+    config.misc.epgcache_filename.setValue(HDD_EPG_DAT)
+config.misc.epgcache_filename.save()
 # Set default configuration
 config.plugins.epgimport = ConfigSubsection()
 config.plugins.epgimport.enabled = ConfigEnableDisable(default=True)
@@ -67,6 +101,7 @@ config.plugins.epgimport.loadepg_only = ConfigSelection(default="default", choic
     ("iptv", _("only IPTV channels")),
     ("all", _("all channels"))
 ])
+config.plugins.epgimport.pathdb = ConfigText(default=HDD_EPG_DAT)
 config.plugins.epgimport.execute_shell = ConfigYesNo(default=False)
 config.plugins.epgimport.shell_name = ConfigText(default="")
 config.plugins.epgimport.standby_afterwakeup = ConfigYesNo(default=False)
@@ -316,16 +351,19 @@ class EPGImportConfig(ConfigListScreen, Screen):
         self["key_blue"] = Button(_("Sources"))
         self["description"] = Label("")
         self["setupActions"] = ActionMap(["SetupActions", "ColorActions", "TimerEditActions", "MovieSelectionActions"],
-                                         {"red": self.keyCancel,
+                                         {"red": self.keyRed,
                                           "green": self.keyGreen,
                                           "yellow": self.doimport,
                                           "blue": self.dosources,
-                                          "cancel": self.keyCancel,
+                                          "cancel": self.extnok,
                                           "ok": self.keyOk,
                                           "log": self.keyInfo,
                                           "contextMenu": self.openMenu, }, -1)
-        ConfigListScreen.__init__(self, [], session)
+        # ConfigListScreen.__init__(self, [], session)
         self.lastImportResult = None
+        self.list = []
+        self.onChangedEntry = []
+        ConfigListScreen.__init__(self, self.list, session=self.session, on_change=self.changedEntry)
         self.prev_onlybouquet = config.plugins.epgimport.import_onlybouquet.value
         self.initConfig()
         self.createSetup()
@@ -337,10 +375,29 @@ class EPGImportConfig(ConfigListScreen, Screen):
         self.updateStatus()
         self.onLayoutFinish.append(self.createSummary)
 
+    # for summary:
+    def changedEntry(self):
+        for x in self.onChangedEntry:
+            x()
+
+    def getCurrentEntry(self):
+        return self["config"].getCurrent()[0]
+
+    def getCurrentValue(self):
+        return str(self["config"].getCurrent()[1].getText())
+
+    def createSummary(self):
+        from Screens.Setup import SetupSummary
+        return SetupSummary
+
+    def __layoutFinished(self):
+        self.setTitle(self.setup_title)
+
     def initConfig(self):
         dx = 4 * " "
         self.EPG = config.plugins.epgimport
         self.cfg_enabled = getConfigListEntry(_("Automatic import EPG"), self.EPG.enabled, _("When enabled, it allows you to schedule an automatic EPG update at the given days and time."))
+        self.cfg_pathdb = getConfigListEntry(_("Path DB EPG"), self.EPG.pathdb)
         self.cfg_wakeup = getConfigListEntry(dx + _("Automatic start time"), self.EPG.wakeup, _("Specify the time for the automatic EPG update."))
         self.cfg_deepstandby = getConfigListEntry(dx + _("When in deep standby"), self.EPG.deepstandby, _("Choose the action to perform when the box is in deep standby and the automatic EPG update should normally start."))
         self.cfg_shutdown = getConfigListEntry(dx + _("Return to deep standby after import"), self.EPG.shutdown, _("This will turn back waked up box into deep-standby after automatic EPG import."))
@@ -374,6 +431,7 @@ class EPGImportConfig(ConfigListScreen, Screen):
                     self.list.append(self.cfg_repeat_import)
             else:
                 self.list.append(self.cfg_repeat_import)
+        self.list.append(self.cfg_pathdb)
         self.list.append(self.cfg_day_profile)
         self.list.append(self.cfg_runboot)
         if self.EPG.runboot.value != "4":
@@ -399,12 +457,33 @@ class EPGImportConfig(ConfigListScreen, Screen):
         self.list.append(self.cfg_showinmainmenu)
         self.list.append(self.cfg_showinextensions)
         self["config"].list = self.list
-        self["config"].setList(self.list)
+        self["config"].l.setList(self.list)
 
     def newConfig(self):
         cur = self["config"].getCurrent()
         if cur in (self.cfg_enabled, self.cfg_shutdown, self.cfg_deepstandby, self.cfg_runboot, self.cfg_loadepg_only, self.cfg_execute_shell):
             self.createSetup()
+
+    def keyRed(self):
+        def setPrevValues(section, values):
+            for (key, val) in section.content.items.items():
+                value = values.get(key, None)
+                if value is not None:
+                    if isinstance(val, ConfigSubsection):
+                        setPrevValues(val, value)
+                    else:
+                        val.value = value
+        setPrevValues(self.EPG, self.prev_values)
+        self.keyGreen()
+
+    def extnok(self, answer=None):
+        if answer is None:
+            self.session.openWithCallback(self.extnok, MessageBox, _("Really close without saving settings?"))
+        elif answer:
+            for x in self["config"].list:
+                x[1].cancel()
+            self.close(True)
+        return
 
     def keyGreen(self):
         self.updateTimer.stop()
@@ -415,9 +494,19 @@ class EPGImportConfig(ConfigListScreen, Screen):
         if self.EPG.shutdown.value:
             self.EPG.standby_afterwakeup.value = False
             self.EPG.repeat_import.value = 0
-        self.EPG.save()
+        # self.EPG.save()
         if self.prev_onlybouquet != config.plugins.epgimport.import_onlybouquet.value or (autoStartTimer is not None and autoStartTimer.prev_multibouquet != config.usage.multibouquet.value):
             EPGConfig.channelCache = {}
+        self.save()
+        # self.close(True)
+
+    def save(self):
+        if self["config"].isChanged():
+            for x in self["config"].list:
+                x[1].save()
+            configfile.save()
+            self.EPG.save()
+            self.session.open(MessageBox, _("Settings saved successfully !"), MessageBox.TYPE_INFO, timeout=5)
         self.close(True)
 
     def keyLeft(self):
@@ -575,7 +664,7 @@ class EPGImportSources(Screen):
                 tree.append(cat)
         self["list"] = ExpandableSelectionList.ExpandableSelectionList(tree, enableWrapAround=True)
         if tree:
-            self["key_yellow"] = Button(_("Import current source"))
+            self["key_yellow"] = Button(_("Import"))
         else:
             self["key_yellow"] = Button()
         self["setupActions"] = ActionMap(["SetupActions", "ColorActions"],
@@ -636,7 +725,11 @@ class EPGImportProfile(ConfigListScreen, Screen):
                                           "green": self.save,
                                           "save": self.save,
                                           "cancel": self.keyCancel,
-                                          "ok": self.save, }, -2)
+                                          "ok": self.save}, -2)
+        self.onLayoutFinish.append(self.setCustomTitle)
+
+    def setCustomTitle(self):
+        self.setTitle(_("Days Profile"))
 
     def save(self):
         if not config.plugins.extra_epgimport.day_import[0].value:
@@ -649,6 +742,16 @@ class EPGImportProfile(ConfigListScreen, Screen):
                                     self.session.open(MessageBox, _("You may not use this settings!\nAt least one day a week should be included!"), MessageBox.TYPE_INFO, timeout=6)
                                     return
         ConfigListScreen.keySave(self)
+        """
+        # for x in self["config"].list:
+            # x[1].save()
+        # self.close()
+        """
+
+    def cancel(self):
+        for x in self["config"].list:
+            x[1].cancel()
+        self.close()
 
 
 class EPGImportLog(Screen):

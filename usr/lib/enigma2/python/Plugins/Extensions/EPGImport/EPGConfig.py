@@ -1,18 +1,16 @@
 from __future__ import absolute_import, print_function
-
+from xml.etree.cElementTree import iterparse
 import gzip
 import os
+import random
+import re
+import time
+
+from . import log, EPGConfig
 try:  # python2
 	import cPickle as pickle
 except:  # python3
 	import pickle
-import random
-import re
-import time
-from xml.etree.cElementTree import iterparse
-
-from . import log, EPGConfig
-
 
 # User selection stored here, so it goes into a user settings backup
 SETTINGS_FILE = '/etc/enigma2/epgimport.conf'
@@ -276,13 +274,13 @@ def storeUserSettings(filename=SETTINGS_FILE, sources=None):
 if __name__ == '__main__':
 	import sys
 	x = []
-	l = []
+	lx = []
 	path = '.'
 	if len(sys.argv) > 1:
 		path = sys.argv[1]
 	for p in enumSources(path):
 		t = (p.description, p.urls, p.parser, p.format, p.channels, p.nocheck)
-		l.append(t)
+		lx.append(t)
 		print(t)
 		x.append(p.description)
 	storeUserSettings('settings.pkl', [1, "twee"])
@@ -290,9 +288,9 @@ if __name__ == '__main__':
 	os.remove('settings.pkl')
 	for p in enumSources(path, x):
 		t = (p.description, p.urls, p.parser, p.format, p.channels, p.nocheck)
-		assert t in l
-		l.remove(t)
-	assert not l
+		assert t in lx
+		lx.remove(t)
+	assert not lx
 	for name, c in channelCache.items():
 		print("Update:", name)
 		c.update()

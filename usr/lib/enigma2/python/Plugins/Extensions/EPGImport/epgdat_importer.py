@@ -14,11 +14,33 @@ else:
 	settingspath = '/etc/enigma2'
 
 
+def getMountPoints():
+	mount_points = []
+	try:
+		with open('/proc/mounts', 'r') as mounts:
+			for line in mounts:
+				parts = line.split()
+				mount_point = parts[1]
+				if os.path.ismount(mount_point) and os.access(mount_point, os.W_OK):
+					mount_points.append(mount_point)
+	except Exception as e:
+		print("[EPGImport] Errore durante la lettura di /proc/mounts:", e)
+	return mount_points
+
+
+mount_points = getMountPoints()
+
+
 class epgdatclass:
 	def __init__(self):
 		self.data = None
 		self.services = None
 		path = tmppath
+		"""
+		# for mount_point in mount_points:
+			# if '/media' in mount_point:
+				# path = mount_point
+		"""
 		if self.checkPath('/media/cf'):
 			path = '/media/cf'
 		if self.checkPath('/media/mmc'):
@@ -31,7 +53,7 @@ class epgdatclass:
 		self.epg = epgdat.epgdat_class(path, settingspath, self.epgfile)
 
 	def importEvents(self, services, dataTupleList):
-		'This method is called repeatedly for each bit of data'
+		'''This method is called repeatedly for each bit of data'''
 		if services != self.services:
 			self.commitService()
 			self.services = services
@@ -58,8 +80,8 @@ class epgdatclass:
 
 	def checkPath(self, path):
 		f = os.popen('mount', "r")
-		for l in f:
-			if l.find(path) != -1:
+		for lx in f.xreadlines():
+			if lx.find(path) != - 1:
 				return True
 		return False
 

@@ -6,7 +6,7 @@ from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.Sources.List import List
 from enigma import eServiceCenter, eServiceReference
-from Screens.ChannelSelection import ChannelSelectionBase, service_types_radio, service_types_tv
+from Screens.ChannelSelection import service_types_radio, service_types_tv, ChannelSelectionBase
 from Screens.ChoiceBox import ChoiceBox
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
@@ -131,11 +131,12 @@ class filtersServicesSetup(Screen):
 						MultiContentEntryText(pos = (50, 25), size = (380, 20), font = 1, flags = RT_HALIGN_LEFT, text = 1),
 						MultiContentEntryText(pos = (100, 47), size = (400, 17), font = 2, flags = RT_HALIGN_LEFT, text = 2),
 					],
-				 "fonts": [gFont("Regular", 21), gFont("Regular", 19), gFont("Regular", 16)],
-				 "itemHeight": 65
+				"fonts": [gFont("Regular", 21), gFont("Regular", 19), gFont("Regular", 16)],
+				"itemHeight": 65
 				}
 			</convert>
 		</widget>
+		<!-- <widget name="introduction" position="20,750" size="1240,50" font="Regular;24" halign="center" valign="center" /> -->
 	</screen>"""
 
 	def __init__(self, session):
@@ -150,17 +151,15 @@ class filtersServicesSetup(Screen):
 		self["key_green"] = Label(_("Add Provider"))
 		self["key_yellow"] = Label(_("Add Channel"))
 		self["key_blue"] = Label("")
+		# self["introduction"] = Label(_("press OK to save list"))
 		self.updateButtons()
-
 		self["actions"] = ActionMap(["OkCancelActions", "ColorActions"],
-									{
-									"cancel": self.exit,
-									"ok": self.keyOk,
-									"red": self.keyRed,
-									"green": self.keyGreen,
-									"yellow": self.keyYellow,
-									"blue": self.keyBlue, }, -1)
-
+                                    {"cancel": self.exit,
+                                     "ok": self.keyOk,
+                                     "red": self.keyRed,
+                                     "green": self.keyGreen,
+                                     "yellow": self.keyYellow,
+                                     "blue": self.keyBlue}, -1)
 		self.setTitle(_("Ignore services list(press OK to save)"))
 
 	def keyRed(self):

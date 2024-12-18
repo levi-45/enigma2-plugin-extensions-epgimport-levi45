@@ -2,19 +2,19 @@
 # you can supply a similar interface. See plugin.py and OfflineImport.py for
 # the contract.
 
-from __future__ import absolute_import, print_function
-
-import gzip
-import os
-import random
-import time
-import six
+from __future__ import absolute_import
+from __future__ import print_function
+from Components.config import config
 from datetime import datetime
-
-import twisted.python.runtime
 from twisted.internet import reactor, ssl, threads
 from twisted.internet._sslverify import ClientTLSOptions
 from twisted.web.client import downloadPage
+import gzip
+import os
+import random
+import six
+import time
+import twisted.python.runtime
 
 try:  # python3
 	from http.client import HTTPException
@@ -55,6 +55,37 @@ PARSERS = {
 }
 
 
+def getMountPoints():
+	mount_points = []
+	try:
+		with open('/proc/mounts', 'r') as mounts:
+			for line in mounts:
+				parts = line.split()
+				mount_point = parts[1]
+				if os.path.ismount(mount_point) and os.access(mount_point, os.W_OK):
+					mount_points.append(mount_point)
+	except Exception as e:
+		print("[EPGImport] Errore durante la lettura di /proc/mounts:", e)
+	return mount_points
+
+
+mount_points = getMountPoints()
+mount_point = None
+for mp in mount_points:
+	epg_path = os.path.join(mp, 'epg.dat')
+	if os.path.exists(epg_path):
+		mount_point = epg_path
+		break
+
+HDD_EPG_DAT = mount_point or '/etc/enigma2/epg.dat'
+
+if config.misc.epgcache_filename.value:
+	HDD_EPG_DAT = config.misc.epgcache_filename.value
+else:
+	config.misc.epgcache_filename.setValue(HDD_EPG_DAT)
+# config.misc.epgcache_filename.save()
+
+
 def relImport(name):
 	fullname = __name__.split('.')
 	fullname[-1] = name
@@ -85,23 +116,23 @@ def bigStorage(minFree, default, *candidates):
 			return default
 	except Exception as e:
 		print("[EPGImport] Failed to stat %s:" % default, e, file=log)
-	mounts = open('/proc/mounts', 'rb').readlines()
+	# mounts = open('/proc/mounts', 'rb').readlines()
 	# format: device mountpoint fstype options #
-	mountpoints = [x.split(' ', 2)[1] for x in mounts]
+	all_mount_points = getMountPoints()
 	for candidate in candidates:
-		if candidate in mountpoints:
+		if candidate in all_mount_points:
 			try:
 				diskstat = os.statvfs(candidate)
 				free = diskstat.f_bfree * diskstat.f_bsize
 				if free > minFree:
 					return candidate
-			except:
-				pass
+			except Exception as e:
+				print("[bigStorage] Impossibile ottenere informazioni su %s: %s" % (candidate, e))
 	return default
 
 
 class OudeisImporter:
-	'Wrapper to convert original patch to new one that accepts multiple services'
+	"""Wrapper to convert original patch to new one that accepts multiple services"""
 
 	def __init__(self, epgcache):
 		self.epgcache = epgcache
@@ -116,8 +147,8 @@ class OudeisImporter:
 def unlink_if_exists(filename):
 	try:
 		os.unlink(filename)
-	except:
-		pass
+	except Exception as e:
+		print("[EPGImport] warning: Could not remove '%s' intermediate" % filename, repr(e))
 
 
 class EPGImport:
@@ -199,6 +230,7 @@ class EPGImport:
 			self.storage = self.epgcache
 		elif hasattr(self.epgcache, 'importEvent'):
 			self.storage = OudeisImporter(self.epgcache)
+			self.saveEPGCache()
 		else:
 			print("[EPGImport] oudeis patch not detected, using epg.dat instead.")
 			from . import epgdat_importer
@@ -340,7 +372,7 @@ class EPGImport:
 			return self.fd.fileno()
 
 	def doThreadRead(self, filename):
-		'This is used on PLi with threading'
+		"""This is used on PLi with threading"""
 		for data in self.createIterator(filename):
 			if data is not None:
 				self.eventCount += 1
@@ -360,7 +392,7 @@ class EPGImport:
 				print("[EPGImport] warning: Could not remove '%s' intermediate" % filename, e, file=log)
 
 	def doRead(self):
-		'called from reactor to read some data'
+		"""called from reactor to read some data"""
 		try:
 			# returns tuple (ref, data) or None when nothing available yet.
 			data = next(self.iterator)
@@ -378,7 +410,7 @@ class EPGImport:
 			self.nextImport()
 
 	def connectionLost(self, failure):
-		'called from reactor on lost connection'
+		"""called from reactor on lost connection"""
 		# This happens because enigma calls us after removeReader
 		print("[EPGImport] connectionLost", failure, file=log)
 
@@ -452,7 +484,11 @@ class EPGImport:
 		return self.source is not None
 
 	def do_download(self, sourcefile, afterDownload, downloadFail):
-		path = bigStorage(9000000, '/tmp', '/media/cf', '/media/mmc', '/media/usb', '/media/hdd')
+		# path = bigStorage(9000000, '/tmp', '/media/DOMExtender', '/media/cf', '/media/mmc', '/media/usb', '/media/hdd')
+		path = bigStorage(9000000, *mount_points)
+		if not path or not os.path.isdir(path):
+			print("[EPGImport] Percorso non valido, usando '/tmp'")
+			path = '/tmp'  # Usa un fallback come /tmp se il percorso non è valido.
 		filename = os.path.join(path, 'epgimport')
 		ext = os.path.splitext(sourcefile)[1]
 		# Keep sensible extension, in particular the compression type
