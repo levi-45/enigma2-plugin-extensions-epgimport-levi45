@@ -1,0 +1,290 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-07 15:15+0100\n"
+"PO-Revision-Date: 2025-03-09 13:08+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
+
+msgid ""
+"\n"
+"Import of epg data will start.\n"
+"This may take a few minutes.\n"
+"Is this ok?"
+msgstr ""
+"\n"
+"Epg verilerinin yuklenmesi başlayacak.\n"
+"Bu işlem birkaç dakika sürebilir.\n"
+"Bu tamammi?"
+
+msgid " events\n"
+msgstr " programlar\n"
+
+msgid "Add Channel"
+msgstr "Kanal Ekle"
+
+msgid "Add Provider"
+msgstr "Sağlayıcı Ekle"
+
+msgid "All services provider"
+msgstr "Tüm servis sağlayıcı"
+
+msgid "Automated EPG Importer"
+msgstr "Otomatik EPG yukleyici"
+
+msgid "Automatic import EPG"
+msgstr "EPG'yi otomatik yukle"
+
+msgid "Automatic start time"
+msgstr "Otomatik başlama zamanı"
+
+msgid "Cancel"
+msgstr "Iptal"
+
+msgid "Choice days for start import"
+msgstr "EPG yuklemek icin gun secin"
+
+msgid "Clear"
+msgstr "Temizle"
+
+msgid "Consider setting 'Days Profile'"
+msgstr "'Gün Profili'ni ayarlamayı yapin"
+
+msgid "Days Profile"
+msgstr "Günlerin Profili"
+
+msgid "Delete all"
+msgstr "Hepsini sil"
+
+msgid "Delete current EPG before import"
+msgstr "Yeni yukleme baslamadan önce geçerli EPG'yi silin"
+
+msgid "Delete selected"
+msgstr "Secileni sil"
+
+msgid ""
+"Do you want to update Source now?\n"
+"\n"
+"Wait for the import successful message!"
+msgstr ""
+"Kaynağı şimdi güncellemek ister misiniz?\n"
+"\n"
+"Yukleme başarılı mesajını bekleyin!"
+
+msgid "EPG Import Configuration"
+msgstr "EPG Yukleme  Yapılandırması"
+
+msgid "EPG Import Log"
+msgstr "EPG Yukleme bilgisi"
+
+msgid "EPG Import Sources"
+msgstr "EPG Yukleme Kaynakları"
+
+#, python-format
+msgid "EPG Import finished, %d events"
+msgstr "EPG Yukleme tamamlandı, %d programlar"
+
+msgid "EPG-Importer"
+msgstr "EPG-Yukleyici"
+
+msgid "EPG-Importer Now"
+msgstr "EPG-Yukleme Şimdi"
+
+msgid ""
+"EPGImport\n"
+"Import of epg data is still in progress. Please wait."
+msgstr "Epg verilerinin yuklenmesi hala devam ediyor. Lütfen bekleyin."
+
+msgid ""
+"EPGImport\n"
+"Import of epg data will start.\n"
+"This may take a few minutes.\n"
+"Is this ok?"
+msgstr ""
+"EPGI Yukleme\n"
+"Epg verilerinin yuklenmesi başlayacak.\n"
+"Bu işlem birkaç dakika sürebilir.\n"
+"Bu tamammi?"
+
+msgid ""
+"EPGImport Plugin\n"
+"Failed to start:\n"
+msgstr ""
+"EPG Yukleme Eklentisi\n"
+"Başlatılamadı:\n"
+
+msgid "Friday"
+msgstr "Cuma"
+
+msgid "Hours after which the import is repeated"
+msgstr "Yuklemenin tekrarlandığı saatler"
+
+msgid "Ignore services list"
+msgstr "Servis listesini yok say"
+
+msgid "Import"
+msgstr "Yukle"
+
+msgid "Import failed with error: {}"
+msgstr "Yukleme  başarısız oldu: {}"
+
+msgid "Import from Git"
+msgstr "Git'ten yukle"
+
+#, python-format
+msgid ""
+"Importing:\n"
+"%s %s events"
+msgstr ""
+"Yukluyor:\n"
+"%s %s programlar"
+
+msgid "Last import: "
+msgstr "Son yukleme: "
+
+#, python-format
+msgid "Last import: %s events"
+msgstr "Son yukleme: %s programlar"
+
+msgid "Load EPG only for IPTV channels"
+msgstr "EPG'yi yalnızca IPTV kanalları için yükle"
+
+msgid "Load EPG only services in bouquets"
+msgstr "EPG yi yalnızca Buketlerde yukleyin"
+
+msgid "Load long descriptions up to X days"
+msgstr "X güne kadar uzun açıklamaları yükleyin"
+
+msgid "Manual"
+msgstr "Elle"
+
+msgid "Monday"
+msgstr "Pazartesi"
+
+msgid "No active EPG sources found, nothing to do"
+msgstr "Etkin EPG kaynağı bulunamadı, yapılacak bir şey yok"
+
+msgid "Press OK"
+msgstr "Ok tusuna bas"
+
+msgid "Really delete all list?"
+msgstr "Gerçekten tüm listeyi silmek istiyor musunuz?"
+
+msgid "Return to deep standby after import"
+msgstr "Yukleme işleminden sonra derin bekleme moduna geri dön"
+
+msgid "Run AutoTimer after import"
+msgstr "Yukleme işleminden sonra Otomatik Zamanlayıcıyi çalıştırın"
+
+msgid "Saturday"
+msgstr "Cumartesi"
+
+msgid "Save"
+msgstr "Kayit et"
+
+msgid "Select action"
+msgstr "Islem seçin"
+
+msgid "Select service to add..."
+msgstr "Eklenecek hizmeti seçin..."
+
+msgid "Show 'EPGImport' in extensions"
+msgstr "Eklentilerde 'EPGImport' göster"
+
+msgid "Show 'EPGImport' in plugins"
+msgstr "Eklentilerde 'EPGImport' göster"
+
+msgid "Show log"
+msgstr "Infoyu göster"
+
+msgid "Skip import on restart GUI"
+msgstr "GUI'yi yeniden başlatırken yuklemeyi atla"
+
+msgid "Source EPG"
+msgstr "EPG Kaynagi"
+
+msgid "Sources"
+msgstr "Kaynak"
+
+msgid "Sources saved successfully!"
+msgstr "Kaynaklar başarıyla kaydedildi!"
+
+msgid "Specify the source for EPG."
+msgstr "EPG için kaynağı belirtin."
+
+msgid "Standby at startup"
+msgstr "Başlangıçta beklemede"
+
+msgid "Start import after booting up"
+msgstr "Cihaz acildikdan sonra yuklemeyi başlat"
+
+msgid "Start import after standby"
+msgstr "Bekleme modundan sonra yuklemeyi başlat"
+
+msgid "Sunday"
+msgstr "Pazar"
+
+msgid "Thursday"
+msgstr "Persembe"
+
+msgid "Tuesday"
+msgstr "Sali"
+
+msgid "Update Aborted!"
+msgstr "Güncelleme İptal Edildi!"
+
+msgid "Wednesday"
+msgstr "Carsamba"
+
+msgid "When in deep standby"
+msgstr "Derin bekleme modundayken"
+
+msgid "Write to /tmp/epgimport.log"
+msgstr "/tmp/epgimport.log'a yaz"
+
+msgid ""
+"You may not use this settings!\n"
+"At least one day a week should be included!"
+msgstr ""
+"Bu ayarları kullanmayiniz!\n"
+"En azından haftada bir gün dahil edilmelidir!"
+
+msgid ""
+"You must restart Enigma2 to load the EPG data,\n"
+"is this OK?"
+msgstr ""
+"EPG verilerini yüklemek için Enigma2'yi yeniden başlatmanız gerekir,\n"
+"bu uygun mudur?"
+
+msgid "always"
+msgstr "devamli"
+
+msgid "never"
+msgstr "asla"
+
+msgid "only automatic boot"
+msgstr "yalnızca otomatik acilmada"
+
+msgid "only manual boot"
+msgstr "yalnızca manuel acmada"
+
+msgid "press OK to save list"
+msgstr "kayit icin OK tusuna basin"
+
+msgid "skip the import"
+msgstr "yuklemeyi atla"
+
+msgid "wake up and import"
+msgstr "cihazi baslat ve yukleme yap"
