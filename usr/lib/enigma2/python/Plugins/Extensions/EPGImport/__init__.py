@@ -1,39 +1,22 @@
-# -*- coding: utf-8 -*-
-
-from __future__ import absolute_import
 from Components.Language import language
 from Tools.Directories import resolveFilename, SCOPE_PLUGINS
-import gettext
-import os
+from gettext import bindtextdomain, dgettext, gettext
 
-
-PluginLanguageDomain = 'EPGImport'
-PluginLanguagePath = 'Extensions/EPGImport/locale'
-
-
-isDreambox = False
-if os.path.exists("/usr/bin/apt-get"):
-    isDreambox = True
+PluginLanguageDomain = "EPGImport"
+PluginLanguagePath = "Extensions/EPGImport/locale"
 
 
 def localeInit():
-    if isDreambox:
-        lang = language.getLanguage()[:2]
-        os.environ["LANGUAGE"] = lang
-    gettext.bindtextdomain(PluginLanguageDomain, resolveFilename(SCOPE_PLUGINS, PluginLanguagePath))
+	bindtextdomain(PluginLanguageDomain, resolveFilename(SCOPE_PLUGINS, PluginLanguagePath))
 
 
-if isDreambox:
-    def _(txt):
-        return gettext.dgettext(PluginLanguageDomain, txt) if txt else ""
-else:
-    def _(txt):
-        translated = gettext.dgettext(PluginLanguageDomain, txt)
-        if translated:
-            return translated
-        else:
-            print(("[%s] fallback to default translation for %s" % (PluginLanguageDomain, txt)))
-            return gettext.gettext(txt)
+def _(txt):
+	if dgettext(PluginLanguageDomain, txt):
+		return dgettext(PluginLanguageDomain, txt)
+	else:
+		print("%s fallback to default translation for %s" % (PluginLanguageDomain, txt))
+		return gettext(txt)
+
 
 localeInit()
 language.addCallback(localeInit)

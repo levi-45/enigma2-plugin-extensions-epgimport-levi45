@@ -1,0 +1,562 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: EPGImport\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-02-26 15:03+0100\n"
+"PO-Revision-Date: 2025-02-26 15:03+0100\n"
+"Last-Translator: Vytenis P. <vyteniui@gmail.com>\n"
+"Language-Team: Vytenis P. <vyteniui@gmail.com>\n"
+"Language: lt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.4.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: ../../..\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: filtersServices.py:151
+msgid "Add Provider"
+msgstr "Įtraukti teikėją"
+
+#: filtersServices.py:152
+msgid "Add Channel"
+msgstr "Įtraukti kanalą"
+
+#: filtersServices.py:154
+msgid "press OK to save list"
+msgstr ""
+
+#: filtersServices.py:173 plugin.py:703
+msgid "Ignore services list"
+msgstr "Ignoruoti kanalų sąrašą"
+
+#: filtersServices.py:202
+msgid "Really delete all list?"
+msgstr "Ar tikrai ištrinti visą sąrašą?"
+
+#: filtersServices.py:235
+msgid "Delete selected"
+msgstr "šalinti pasirinktus"
+
+#: filtersServices.py:236
+msgid "Delete all"
+msgstr "šalinti viską"
+
+#: filtersServices.py:261
+msgid "Select service to add..."
+msgstr ""
+
+#: filtersServices.py:269
+msgid "All services provider"
+msgstr "Visų kanalų tiekėjas"
+
+#: filtersServices.py:288 plugin.py:704
+msgid "Select action"
+msgstr "Pasirinkite veiksmą"
+
+#: plugin.py:101
+msgid "always"
+msgstr "visada"
+
+#: plugin.py:102
+msgid "only manual boot"
+msgstr "tik rankiniu paleidimu"
+
+#: plugin.py:103
+msgid "only automatic boot"
+msgstr "tik automatiniu paleidimu"
+
+#: plugin.py:104
+msgid "never"
+msgstr "niekada"
+
+#: plugin.py:114
+msgid "wake up and import"
+msgstr "importui prižadinti"
+
+#: plugin.py:115
+msgid "skip the import"
+msgstr "atšaukti importą"
+
+#: plugin.py:121
+msgid "checking service reference(default)"
+msgstr ""
+
+#: plugin.py:122
+msgid "only IPTV channels"
+msgstr ""
+
+#: plugin.py:123
+#, fuzzy
+#| msgid "Add Channel"
+msgid "all channels"
+msgstr "Įtraukti kanalą"
+
+#: plugin.py:139
+msgid "Press OK"
+msgstr "Spauskite 'OK'"
+
+#: plugin.py:148
+msgid "Monday"
+msgstr "pirmadienis"
+
+#: plugin.py:149
+msgid "Tuesday"
+msgstr "antradienis"
+
+#: plugin.py:150
+msgid "Wednesday"
+msgstr "trečiadienis"
+
+#: plugin.py:151
+msgid "Thursday"
+msgstr "ketvirtadienis"
+
+#: plugin.py:152
+msgid "Friday"
+msgstr "penktadienis"
+
+#: plugin.py:153
+msgid "Saturday"
+msgstr "šeštadienis"
+
+#: plugin.py:154
+msgid "Sunday"
+msgstr "sekmadienis"
+
+#: plugin.py:357
+msgid "EPG Import Configuration"
+msgstr "EPG importas - konfigūravimas"
+
+#: plugin.py:360 plugin.py:653
+#, python-format
+msgid "Last import: %s events"
+msgstr "Paskutinis importas:  %s įvykių"
+
+#: plugin.py:361 plugin.py:751 plugin.py:995
+msgid "Cancel"
+msgstr "Atšaukti"
+
+#: plugin.py:362 plugin.py:752 plugin.py:996 plugin.py:1072
+msgid "Save"
+msgstr "Išsaugoti"
+
+#: plugin.py:363
+msgid "Manual"
+msgstr "Rankinis"
+
+#: plugin.py:364
+msgid "Sources"
+msgstr "Šaltiniai"
+
+#: plugin.py:397
+#, python-format
+msgid ""
+"Filtering:\n"
+"%s Please wait!"
+msgstr ""
+
+#: plugin.py:398
+#, fuzzy, python-format
+#| msgid ""
+#| "Importing: %s\n"
+#| "%s events"
+msgid ""
+"Importing:\n"
+"%s %s events"
+msgstr ""
+"Importuojama: %s\n"
+"%s įvykių"
+
+#: plugin.py:438
+msgid "Automatic import EPG"
+msgstr "Automatinis EPG importas"
+
+#: plugin.py:438
+msgid ""
+"When enabled, it allows you to schedule an automatic EPG update at the given "
+"days and time."
+msgstr ""
+
+#: plugin.py:439
+msgid "Path DB EPG"
+msgstr ""
+
+#: plugin.py:440
+msgid "Automatic start time"
+msgstr "Automatinio paleidimo laikas"
+
+#: plugin.py:440
+msgid "Specify the time for the automatic EPG update."
+msgstr ""
+
+#: plugin.py:441
+msgid "When in deep standby"
+msgstr "Jeigu išjungtas"
+
+#: plugin.py:441
+msgid ""
+"Choose the action to perform when the box is in deep standby and the "
+"automatic EPG update should normally start."
+msgstr ""
+
+#: plugin.py:442
+msgid "Return to deep standby after import"
+msgstr "Po importo išjungti"
+
+#: plugin.py:442
+msgid ""
+"This will turn back waked up box into deep-standby after automatic EPG "
+"import."
+msgstr ""
+
+#: plugin.py:443
+msgid "Standby at startup"
+msgstr "Po paleidimo perjungti į budėjimo režimą"
+
+#: plugin.py:443
+msgid ""
+"The waked up box will be turned into standby after automatic EPG import wake "
+"up."
+msgstr ""
+
+#: plugin.py:444
+msgid "Choice days for start import"
+msgstr "Pasirinkite dienas importui"
+
+#: plugin.py:444
+msgid "You can select the day(s) when the EPG update must be performed."
+msgstr ""
+
+#: plugin.py:445
+msgid "Start import after booting up"
+msgstr "Po paleidimo pradėti importą"
+
+#: plugin.py:445
+msgid ""
+"Specify in which case the EPG must be automatically updated after the box "
+"has booted."
+msgstr ""
+
+#: plugin.py:446
+msgid "Load EPG only services in bouquets"
+msgstr "Įkelti tik kanalų iš bukietų EPG"
+
+#: plugin.py:446
+msgid ""
+"To save memory you can decide to only load EPG data for the services that "
+"you have in your bouquet files."
+msgstr ""
+
+#: plugin.py:447
+msgid "Load EPG"
+msgstr ""
+
+#: plugin.py:447
+msgid "Select load EPG mode for services."
+msgstr ""
+
+#: plugin.py:448
+msgid "Consider setting \"Days Profile\""
+msgstr "Atsižvelgti į 'Dienų profilio' nuostatas"
+
+#: plugin.py:448
+msgid ""
+"When you decide to import the EPG after the box booted mention if the \"days "
+"profile\" must be take into consideration or not."
+msgstr ""
+
+#: plugin.py:449
+msgid "Skip import on restart GUI"
+msgstr "Paleidžiant iš naujo, neimportuoti"
+
+#: plugin.py:449
+msgid ""
+"When you restart the GUI you can decide to skip or not the EPG data import."
+msgstr ""
+
+#: plugin.py:450
+#, fuzzy
+#| msgid "Show \"EPGImport\" in extensions"
+msgid "Show \"EPG import now\" in extensions"
+msgstr "'EPG importą' rodyti tarp plėtinių"
+
+#: plugin.py:450
+msgid ""
+"Display a shortcut \"EPG import now\" in the extension menu. This menu entry "
+"will immediately start the EPG update process when selected."
+msgstr ""
+
+#: plugin.py:451
+#, fuzzy
+msgid "Show \"EPG import\" in epg menu"
+msgstr "'EPG importą' rodyti tarp plėtinių"
+
+#: plugin.py:451
+msgid ""
+"Display a shortcut \"EPG import\" in your STB epg menu screen. This allows "
+"you to access the configuration."
+msgstr ""
+
+#: plugin.py:452
+msgid "Load long descriptions up to X days"
+msgstr "Ilgus aprašymus įkelti iki X dienų trukmei"
+
+#: plugin.py:452
+msgid ""
+"Define the number of days that you want to get the full EPG data, reducing "
+"this number can help you to save memory usage on your box. But you are also "
+"limited with the EPG provider available data. You will not have 15 days EPG "
+"if it only provide 7 days data."
+msgstr ""
+
+#: plugin.py:453
+msgid "Run AutoTimer after import"
+msgstr "Po importo paleisti autolaikmatį"
+
+#: plugin.py:453
+msgid ""
+"You can start automatically the plugin AutoTimer after the EPG data update "
+"to have it refreshing its scheduling after EPG data refresh."
+msgstr ""
+
+#: plugin.py:454
+msgid "Clearing current EPG before import"
+msgstr "Prieš importą išvalyti esantį EPG"
+
+#: plugin.py:454
+msgid ""
+"This will clear the current EPG data in memory before updating the EPG data. "
+"This allows you to always have a clean new EPG with the latest EPG data, for "
+"example in case of program changes between refresh, otherwise EPG data are "
+"cumulative."
+msgstr ""
+
+#: plugin.py:455
+msgid "Also apply \"channel id\" filtering on custom.channels.xml"
+msgstr ""
+
+#: plugin.py:455
+msgid ""
+"This is for advanced users that are using the channel id filtering feature. "
+"If enabled, the filter rules defined into /etc/epgimport/channel_id_filter."
+"conf will also be applied on your /etc/epgimport/custom.channels.xml file."
+msgstr ""
+
+#: plugin.py:456
+msgid "Execute shell command before import EPG"
+msgstr ""
+
+#: plugin.py:456
+msgid ""
+"When enabled, then you can run the desired script before starting the "
+"import, after which the import of the EPG will begin."
+msgstr ""
+
+#: plugin.py:457
+msgid "Shell command name"
+msgstr ""
+
+#: plugin.py:457
+msgid "Enter shell command name."
+msgstr ""
+
+#: plugin.py:458
+#, fuzzy
+#| msgid "Start import after booting up"
+msgid "Start import after standby"
+msgstr "Po paleidimo pradėti importą"
+
+#: plugin.py:458
+#, fuzzy
+#| msgid "Start import after booting up"
+msgid "Start import after resuming from standby mode."
+msgstr "Po paleidimo pradėti importą"
+
+#: plugin.py:459
+msgid "Hours after which the import is repeated"
+msgstr ""
+
+#: plugin.py:459
+msgid ""
+"Number of hours (1-23, or 0 for no repeat) after which the import is "
+"repeated. This value is not saved and will be reset when the GUI restarts."
+msgstr ""
+
+#: plugin.py:538
+msgid "Settings saved successfully !"
+msgstr ""
+
+#: plugin.py:584
+msgid "Choose Directory:"
+msgstr ""
+
+#: plugin.py:585
+msgid "Choose directory"
+msgstr ""
+
+#: plugin.py:615
+msgid "SELECT YOUR CHOICE"
+msgstr ""
+
+#: plugin.py:647
+msgid "unknown"
+msgstr ""
+
+#: plugin.py:648
+#, python-format
+msgid "Last: %s %s, %d events"
+msgstr "Paskutiniai: %s %s, %d įvykiai"
+
+#: plugin.py:658
+msgid ""
+"EPGImport\n"
+"Import of epg data is still in progress. Please wait."
+msgstr ""
+"EPG importas\n"
+"EPG duomenų importas dar vyksta, palaukite..."
+
+#: plugin.py:669
+msgid "No active EPG sources found, nothing to do"
+msgstr "Aktyvių EPG šaltinių nerasta, nėra ką daryti"
+
+#: plugin.py:673
+msgid ""
+"EPGImport\n"
+"Import of epg data will start.\n"
+"This may take a few minutes.\n"
+"Is this ok?"
+msgstr ""
+"EPG importas\n"
+"EPG duomenų importas prasideda.\n"
+"Tai gali užtrukti keletą minučių.\n"
+"Pradėti?"
+
+#: plugin.py:685
+msgid ""
+"EPGImport Plugin\n"
+"Failed to start:\n"
+msgstr ""
+"EPG importo įskiepis\n"
+"Nepavyko paleisti:\n"
+
+#: plugin.py:701
+msgid "Show log"
+msgstr "Rodyti žurnalą"
+
+#: plugin.py:753
+#, fuzzy
+#| msgid "EPG-Importer"
+msgid "Import"
+msgstr "EPG importo nuostatos"
+
+#: plugin.py:754
+msgid "Import from Git"
+msgstr ""
+
+#: plugin.py:795
+msgid "EPG Import Sources"
+msgstr "EPG importas - šaltiniai"
+
+#: plugin.py:801
+msgid ""
+"Do you want to update Source now?\n"
+"\n"
+"Wait for the import successful message!"
+msgstr ""
+
+#: plugin.py:830
+msgid "Source files Imported and List Updated!"
+msgstr ""
+
+#: plugin.py:837
+#, python-format
+msgid "Update Failed: %s"
+msgstr ""
+
+#: plugin.py:844
+msgid "Update Aborted!"
+msgstr ""
+
+#: plugin.py:1014
+msgid "Days Profile"
+msgstr "Dienų profilis"
+
+#: plugin.py:1020
+msgid ""
+"You may not use this settings!\n"
+"At least one day a week should be included!"
+msgstr ""
+"Jūs negalite naudoti šių nustatymų!\n"
+"Turi būti įtraukta bent viena savaitės diena!"
+
+#: plugin.py:1069
+msgid "Clear"
+msgstr "Išvalyti"
+
+#: plugin.py:1100
+msgid "EPG Import Log"
+msgstr "EPG importas - žurnalas"
+
+#: plugin.py:1106
+msgid "Write to /tmp/epgimport.log"
+msgstr "Rašyti į /tmp/epgimport.log"
+
+#: plugin.py:1122
+msgid "Last import: "
+msgstr "Paskutinis importas: "
+
+#: plugin.py:1122
+msgid " events\n"
+msgstr " įvykiai\n"
+
+#: plugin.py:1122
+msgid ""
+"\n"
+"Import of epg data will start.\n"
+"This may take a few minutes.\n"
+"Is this ok?"
+msgstr ""
+"\n"
+"EPG duomenų importas prasideda.\n"
+"Tai gali užtrukti keletą minučių.\n"
+"Pradėti?"
+
+#: plugin.py:1170
+#, python-format
+msgid "EPG Import finished, %d events"
+msgstr "EPG importas baigtas, %d įvykių"
+
+#: plugin.py:1170
+msgid ""
+"You must restart Enigma2 to load the EPG data,\n"
+"is this OK?"
+msgstr ""
+"Kad įkelti EPG duomenis, aparatą reikia paleisti iš naujo.\n"
+"Paleisti  iš naujo dabar?"
+
+#: plugin.py:1311
+msgid "No source file found !"
+msgstr ""
+
+#: plugin.py:1512 plugin.py:1535
+#, fuzzy
+#| msgid "EPG Import Log"
+msgid "EPG Import"
+msgstr "EPG importas - žurnalas"
+
+#: plugin.py:1527
+msgid "Automated EPG Importer"
+msgstr "Automatizuotas EPG importas"
+
+#: plugin.py:1529
+#, fuzzy
+#| msgid "EPG-Importer"
+msgid "EPG-Importer Now"
+msgstr "EPG importo nuostatos"
+
+#~ msgid "Import current source"
+#~ msgstr "Importuoti šį šaltinį"

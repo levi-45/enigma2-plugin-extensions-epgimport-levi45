@@ -1,28 +1,29 @@
 from __future__ import absolute_import
-
-import os
-
+from . import _
 from Components.ActionMap import ActionMap
 from Components.Label import Label
 from Components.Sources.List import List
-from enigma import eServiceCenter, eServiceReference
+from enigma import eServiceReference, eServiceCenter
 from Screens.ChannelSelection import service_types_radio, service_types_tv, ChannelSelectionBase
 from Screens.ChoiceBox import ChoiceBox
 from Screens.MessageBox import MessageBox
 from Screens.Screen import Screen
 from ServiceReference import ServiceReference
+from os.path import isdir, join
+from os import system, mkdir
 
-from . import EPGConfig, _
+from . import EPGConfig
 
 OFF = 0
 EDIT_BOUQUET = 1
 EDIT_ALTERNATIVES = 2
+SOURCE_PATH="/etc/epgimport"
 
 
 def getProviderName(ref):
 	typestr = ref.getData(0) in (2, 10) and service_types_radio or service_types_tv
-	pos = typestr.rfind(':')
-	rootstr = '%s (channelID == %08x%04x%04x) && %s FROM PROVIDERS ORDER BY name' % (typestr[:pos + 1], ref.getUnsignedData(4), ref.getUnsignedData(2), ref.getUnsignedData(3), typestr[pos + 1:])
+	pos = typestr.rfind(":")
+	rootstr = "%s (channelID == %08x%04x%04x) && %s FROM PROVIDERS ORDER BY name" % (typestr[:pos + 1], ref.getUnsignedData(4), ref.getUnsignedData(2), ref.getUnsignedData(3), typestr[pos + 1:])
 	provider_root = eServiceReference(rootstr)
 	serviceHandler = eServiceCenter.getInstance()
 	providerlist = serviceHandler.list(provider_root)
@@ -41,7 +42,7 @@ def getProviderName(ref):
 						if service == ref:
 							info = serviceHandler.info(provider)
 							return info and info.getName(provider) or "Unknown"
-	return ''
+	return ""
 
 
 class FiltersList():
@@ -51,35 +52,31 @@ class FiltersList():
 
 	def loadFrom(self, filename):
 		try:
-			cfg = open(filename, 'r')
-		except:
-			return
-		while True:
-			line = cfg.readline()
-			if not line:
-				break
-			if line[0] in '#;\n':
-				continue
-			ref = line.strip()
-			if ref not in self.services:
-				self.services.append(ref)
-		cfg.close()
+			with open(filename, "r") as cfg:
+				for line in cfg:
+					if line[0] in "#;\n":
+						continue
+					ref = line.strip()
+					if ref not in self.services:
+						self.services.append(ref)
+		except Exception as e:
+			print("Error loading from", filename, e)
 
 	def saveTo(self, filename):
 		try:
-			if not os.path.isdir('/etc/epgimport'):
-				os.system('mkdir /etc/epgimport')
-			cfg = open(filename, 'w')
+			if not isdir(SOURCE_PATH):
+				mkdir(SOURCE_PATH)
+			cfg = open(filename, "w")
 		except:
 			return
 		for ref in self.services:
-			cfg.write('%s\n' % (ref))
+			cfg.write("%s\n" % (ref))
 		cfg.close()
 
 	def load(self):
-		self.loadFrom('/etc/epgimport/ignore.conf')
+		self.loadFrom(join(SOURCE_PATH, "ignore.conf"))
 
-	def reload(self):
+	def reload_module(self):
 		self.services = []
 		self.load()
 
@@ -87,12 +84,11 @@ class FiltersList():
 		return self.services
 
 	def save(self):
-		self.saveTo('/etc/epgimport/ignore.conf')
+		self.saveTo(join(SOURCE_PATH, "ignore.conf"))
 
 	def addService(self, ref):
-		if isinstance(ref, str):
-			if ref not in self.services:
-				self.services.append(ref)
+		if isinstance(ref, str) and ref not in self.services:
+			self.services.append(ref)
 
 	def addServices(self, services):
 		if isinstance(services, list):
@@ -101,9 +97,8 @@ class FiltersList():
 					self.services.append(s)
 
 	def delService(self, ref):
-		if isinstance(ref, str):
-			if ref in self.services:
-				self.services.remove(ref)
+		if isinstance(ref, str) and ref in self.services:
+			self.services.remove(ref)
 
 	def delAll(self):
 		self.services = []
@@ -115,11 +110,11 @@ filtersServicesList = FiltersList()
 
 class filtersServicesSetup(Screen):
 	skin = """
-	<screen name="filtersServicesSetup" position="center,center" size="680,440" title="Ignore services list">
-		<ePixmap position="0,390" size="140,40" pixmap="buttons/red.png" alphatest="on" />
-		<ePixmap position="170,390" size="140,40" pixmap="buttons/green.png" alphatest="on" />
-		<ePixmap position="340,390" size="140,40" pixmap="buttons/yellow.png" alphatest="on" />
-		<ePixmap position="510,390" size="140,40" pixmap="buttons/blue.png" alphatest="on" />
+	<screen name="filtersServicesSetup" position="center,center" size="680,470" title="Ignore services list">
+		<ePixmap position="0,390" size="140,40" pixmap="skin_default/buttons/red.png" alphatest="on" />
+		<ePixmap position="170,390" size="140,40" pixmap="skin_default/buttons/green.png"  alphatest="on" />
+		<ePixmap position="340,390" size="140,40" pixmap="skin_default/buttons/yellow.png" alphatest="on" />
+		<ePixmap position="510,390" size="140,40" pixmap="skin_default/buttons/blue.png" alphatest="on" />
 		<widget name="key_red" position="0,390" zPosition="1" size="140,40" font="Regular;17" halign="center" valign="center" backgroundColor="#9f1313" transparent="1" />
 		<widget name="key_green" position="170,390" zPosition="1" size="140,40" font="Regular;17" halign="center" valign="center" backgroundColor="#1f771f" transparent="1" />
 		<widget name="key_yellow" position="340,390" zPosition="1" size="140,40" font="Regular;17" halign="center" valign="center" backgroundColor="#a08500" transparent="1" />
@@ -136,7 +131,7 @@ class filtersServicesSetup(Screen):
 				}
 			</convert>
 		</widget>
-		<!-- <widget name="introduction" position="20,750" size="1240,50" font="Regular;24" halign="center" valign="center" /> -->
+		<widget name="introduction" position="0,440" size="680,30" font="Regular;20" halign="center" valign="center" />
 	</screen>"""
 
 	def __init__(self, session):
@@ -147,20 +142,29 @@ class filtersServicesSetup(Screen):
 		self["list"] = List([])
 		self.updateList()
 
-		self["key_red"] = Label("")
+		self["key_red"] = Label(" ")
 		self["key_green"] = Label(_("Add Provider"))
 		self["key_yellow"] = Label(_("Add Channel"))
-		self["key_blue"] = Label("")
-		# self["introduction"] = Label(_("press OK to save list"))
+		self["key_blue"] = Label(" ")
+		self["introduction"] = Label(_("press OK to save list"))
 		self.updateButtons()
-		self["actions"] = ActionMap(["OkCancelActions", "ColorActions"],
-                                    {"cancel": self.exit,
-                                     "ok": self.keyOk,
-                                     "red": self.keyRed,
-                                     "green": self.keyGreen,
-                                     "yellow": self.keyYellow,
-                                     "blue": self.keyBlue}, -1)
-		self.setTitle(_("Ignore services list(press OK to save)"))
+
+		self["actions"] = ActionMap(
+			[
+				"OkCancelActions",
+				"ColorActions"
+			],
+			{
+				"cancel": self.exit,
+				"ok": self.keyOk,
+				"red": self.keyRed,
+				"green": self.keyGreen,
+				"yellow": self.keyYellow,
+				"blue": self.keyBlue
+			},
+			-1
+		)
+		self.setTitle(_("Ignore services list"))
 
 	def keyRed(self):
 		cur = self["list"].getCurrent()
@@ -181,8 +185,8 @@ class filtersServicesSetup(Screen):
 			if isinstance(ref, list):
 				self.RefList.addServices(ref)
 			else:
-				refstr = ':'.join(ref.toString().split(':')[:11])
-				if any(x in refstr for x in ('1:0:', '4097:0:', '5001:0:', '5002:0:')):
+				refstr = ":".join(ref.toString().split(":")[:11])
+				if any(x in refstr for x in ("1:0:", "4097:0:", "5001:0:", "5002:0:")):
 					self.RefList.addService(refstr)
 			self.updateList()
 			self.updateButtons()
@@ -201,7 +205,7 @@ class filtersServicesSetup(Screen):
 	def keyOk(self):
 		self.RefList.save()
 		if self.RefList.services != self.prev_list:
-			self.RefList.reload()
+			self.RefList.reload_module()
 			EPGConfig.channelCache = {}
 		self.close()
 
@@ -213,7 +217,7 @@ class filtersServicesSetup(Screen):
 	def updateList(self):
 		self.list = []
 		for service in self.RefList.servicesList():
-			if '1:0:' in service:
+			if any(x in service for x in ("1:0:", "4097:0:", "5001:0:", "5002:0:")):
 				provname = getProviderName(eServiceReference(service))
 				servname = ServiceReference(service).getServiceName() or "N/A"
 				self.list.append((servname, provname, service))
@@ -225,17 +229,17 @@ class filtersServicesSetup(Screen):
 			self["key_red"].setText(_("Delete selected"))
 			self["key_blue"].setText(_("Delete all"))
 		else:
-			self["key_red"].setText("")
-			self["key_blue"].setText("")
+			self["key_red"].setText(" ")
+			self["key_blue"].setText(" ")
 
 
 class filtersServicesSelection(ChannelSelectionBase):
 	skin = """
-	<screen position="center,center" size="560,430" title="Channel Selection">
-		<ePixmap pixmap="buttons/red.png" position="0,0" size="140,40" alphatest="on" />
-		<ePixmap pixmap="buttons/green.png" position="140,0" size="140,40" alphatest="on" />
-		<ePixmap pixmap="buttons/yellow.png" position="280,0" size="140,40" alphatest="on" />
-		<ePixmap pixmap="buttons/blue.png" position="420,0" size="140,40" alphatest="on" />
+	<screen position="center,center" size="560,430" title="Select service to add...">
+		<ePixmap pixmap="skin_default/buttons/red.png" position="0,0" size="140,40" alphatest="on" />
+		<ePixmap pixmap="skin_default/buttons/green.png" position="140,0" size="140,40" alphatest="on" />
+		<ePixmap pixmap="skin_default/buttons/yellow.png" position="280,0" size="140,40" alphatest="on" />
+		<ePixmap pixmap="skin_default/buttons/blue.png" position="420,0" size="140,40" alphatest="on" />
 		<widget name="key_red" position="0,0" zPosition="1" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#9f1313" transparent="1" />
 		<widget name="key_green" position="140,0" zPosition="1" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#1f771f" transparent="1" />
 		<widget name="key_yellow" position="280,0" zPosition="1" size="140,40" font="Regular;20" halign="center" valign="center" backgroundColor="#a08500" transparent="1" />
@@ -248,14 +252,14 @@ class filtersServicesSelection(ChannelSelectionBase):
 		self.providers = providers
 		ChannelSelectionBase.__init__(self, session)
 		self.bouquet_mark_edit = OFF
-		self.setTitle(_("Channel Selection"))
+		self.setTitle(_("Select service to add..."))
 		self["actions"] = ActionMap(["OkCancelActions", "TvRadioActions"], {"cancel": self.close, "ok": self.channelSelected, "keyRadio": self.setModeRadio, "keyTV": self.setModeTv})
 		self.onLayoutFinish.append(self.setModeTv)
 
 	def channelSelected(self):
 		ref = self.getCurrentSelection()
 		if self.providers and (ref.flags & 7) == 7:
-			if 'provider' in ref.toString():
+			if "provider" in ref.toString():
 				menu = [(_("All services provider"), "providerlist")]
 
 				def addAction(choice):
@@ -269,7 +273,7 @@ class filtersServicesSelection(ChannelSelectionBase):
 									service = servicelist.getNext()
 									if not service.valid():
 										break
-									refstr = ':'.join(service.toString().split(':')[:11])
+									refstr = ":".join(service.toString().split(":")[:11])
 									providerlist.append((refstr))
 								if providerlist:
 									self.close(providerlist)
@@ -280,7 +284,7 @@ class filtersServicesSelection(ChannelSelectionBase):
 				self.enterPath(ref)
 		elif (ref.flags & 7) == 7:
 			self.enterPath(ref)
-		elif 'provider' not in ref.toString() and not self.providers and not (ref.flags & (64 | 128)) and '%3a//' not in ref.toString():
+		elif "provider" not in ref.toString() and not self.providers and not (ref.flags & (64 | 128)) and "%3a//" not in ref.toString():
 			if ref.valid():
 				self.close(ref)
 
